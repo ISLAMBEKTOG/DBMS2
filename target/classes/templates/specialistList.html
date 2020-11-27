@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <title>Specialists Page</title>
+
+    <style>
+        /* Menu */
+        .header {
+            width: 100%;
+            height: 70px;
+            position: fixed;
+            background-color: white;
+            top: 0;
+            left: 0;
+            border-bottom: black 2px solid;
+            padding: 10px
+        }
+
+        .logo {
+            float: left;
+            width: 200px;
+            margin-left: -30px;
+        }
+
+        .create_resume {
+            float: right;
+            margin: 0 20px 0 20px;
+            font-size: 20px;
+            padding: 10px;
+            background-color: #28a745;
+            border-radius: 10px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .myCabinet {
+            float: right;
+            color: white;
+            font-size: 20px;
+            text-decoration: none;
+            margin-right: 20px;
+            margin-top: 0;
+            padding: 10px;
+            background-color: red;
+            border-radius: 10px;
+        }
+
+        /* Main Block*/
+        .specialistList {
+            margin: 100px 150px;
+        }
+
+        .block_title {
+            text-align: center;
+            margin-bottom: 50px
+        }
+
+        .card {
+            position: inherit;
+            width: 800px;
+            margin-bottom: 10px
+        }
+
+        .card_header_p {
+            display: inline-block;
+        }
+
+        .card_price {
+            float: right;
+            font-weight: 900;
+        }
+
+        .left_side {
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        .card_image {
+            width: 100px;
+            height: 100px;
+            margin-right: 20px
+        }
+
+        .right_side {
+            display: inline-block;
+            width: 600px
+        }
+
+        /* User Block */
+        .user_block {
+            width: 300px;
+            height: 300px;
+            position: fixed;
+            top: 100px;
+            right: 50px;
+            border: black 2px solid;
+            text-align: center;
+        }
+
+        .user_image {
+            width: 150px;
+            height: 150px;
+            margin: 20px 75px;
+            border-radius: 50%;
+            background: #512DA8;
+            font-size: 35px;
+            color: #fff;
+            text-align: center;
+            line-height: 150px;
+        }
+    </style>
+</head>
+
+<body>
+<!-- Menu -->
+<div class="header">
+    <a href="/main"><img class="logo" th:src="@{/img/logo.jpg}"></a>
+    <a class="btn create_resume" href="/resume">Создать резюме</a>
+    <a class="btn myCabinet" href="/myCabinet">Личный кабинет</a>
+</div>
+
+<!-- Main Block-->
+<div class="specialistList">
+    <h2 class="block_title" th:text="${specialistName}"></h2>
+
+    <form method="post" action="/specialists/search" class="form-inline md-form mr-auto mb-4">
+        <input type="hidden" th:value="${blockId}" name="hiddenBlockId">
+
+        <select class="form-control form-control-lg" name="category">
+            <option th:selected="${true}" th:text="All"></option>
+            <div th:each="category : ${categories}">
+                <div th:if="${category.getId() == blockId}">
+                    <option th:text="${category.getName()}"
+                            th:selected="${true}"></option>
+                </div>
+                <div th:if="${category.getId() != blockId}">
+                    <option th:text="${category.getName()}"
+                            th:selected="${false}"></option>
+                </div>
+            </div>
+        </select>
+        <button class="btn btn-lg btn-success" style="margin-left: 10px" type="submit">Поиск</button>
+    </form>
+
+    <div class="card" th:each="specialist : ${specialists}">
+        <div class="card-header">
+            <p class="card_header_p" th:text="${specialist.getDate().toString().split(' ')[0]}"></p>
+            <p class="card_header_p" th:text="${'    ' + specialist.getCity().getName()}"></p>
+
+            <div class="card_price" th:if="${specialist.getPrice() == 0}">
+                Договорная цена
+            </div>
+            <div class="card_price" th:if="${specialist.getPrice() != 0}">
+                <p th:text="${specialist.getPrice()}"></p>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="left_side">
+                <div th:if="${specialist.getImage() == null}">
+                    <img class="card_image" th:attr="src=@{${specialist.getImage()}}">
+                </div>
+                <div th:if="${specialist.getImage() != null}">
+                    <div th:if="${specialist.getImage().contains('photos-mt')}">
+                        <img class="card_image" th:attr="src=@{'http://' + ${specialist.getImage()}}">
+                    </div>
+                    <div th:if="${!specialist.getImage().contains('photos-mt')}">
+                        <img class="card_image" th:attr="src=@{'/img/' + ${specialist.getImage()}}">
+                    </div>
+                </div>
+            </div>
+            <div class="right_side">
+                <h5 class="card-title" th:text="${specialist.getTitle()}"></h5>
+                <p class="card-text" th:text="${specialist.getContent()}"></p>
+            </div>
+
+            <div th:if="${personalSpecialists.contains(specialist)}">
+                <a th:href="@{#}" class="btn btn-success btn-block" style="margin-top: 20px; color: white">Добавлено</a>
+            </div>
+            <div th:if="${!personalSpecialists.contains(specialist)}">
+                <a th:href="@{|/addSpecialist/${blockId}/${specialist.getId()}|}" class="btn btn-primary btn-block"
+                   style="margin-top: 20px;color: white">Добавить</a>
+            </div>
+
+        </div>
+    </div>
+
+    <nav aria-label="..." style="margin-top: 50px;">
+        <ul class="pagination pagination-sm">
+            <li class="page-item" th:each="i : ${#numbers.sequence( 1, count)}">
+                <a class="page-link" th:href="@{|/specialists/${blockId}/${i}/40|}" th:text="${i}"></a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<div class="user_block">
+    <div class="user_image"
+         th:text="${user.getFirstName().toUpperCase().charAt(0)} + ${user.getLastName().toUpperCase().charAt(0)}">
+    </div>
+    <p th:text="${user.getFirstName()} + ' ' + ${user.getLastName()}"></p>
+    <a href="/userPage" style="display: block">Изменить данные</a>
+    <a href="/logout">Выйти</a>
+</div>
+
+</body>
+</html>

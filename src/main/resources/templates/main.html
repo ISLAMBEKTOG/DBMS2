@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <title>Main Page</title>
+    <style>
+        /* Menu */
+        .header {
+            width: 100%;
+            height: 70px;
+            position: fixed;
+            background-color: white;
+            top: 0;
+            left: 0;
+            border-bottom: black 2px solid;
+            padding: 10px
+        }
+
+        .logo {
+            float: left;
+            width: 200px;
+            margin-left: -30px;
+        }
+
+        .create_resume {
+            float: right;
+            margin: 0 20px 0 20px;
+            font-size: 20px;
+            padding: 10px;
+            background-color: #28a745;
+            border-radius: 10px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .myCabinet {
+            float: right;
+            color: white;
+            font-size: 20px;
+            text-decoration: none;
+            margin-right: 20px;
+            margin-top: 0;
+            padding: 10px;
+            background-color: red;
+            border-radius: 10px;
+        }
+
+        /* Main Block */
+        .main {
+            padding: 100px 200px;
+        }
+        .main_title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .block {
+            width: 250px;
+            height: 250px;
+            display: inline-block;
+            margin: 0 65px;
+            opacity: 1;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
+        .block1 {
+            background: url('/img/сторительство.jpg') center no-repeat;
+        }
+        .block2 {
+            background: url('/img/образование.png') center no-repeat;
+        }
+        .block3 {
+            background: url('/img/красота.jpg') center no-repeat;
+        }
+        .block4 {
+            background: url('/img/интернет.jpg') center no-repeat;
+        }
+        .block5 {
+            background: url('/img/автосервис.jpg') center no-repeat;
+        }
+        .block6 {
+            background: url('/img/уборка.jpg') center no-repeat;
+        }
+        .block:hover {
+            opacity: 0.6;
+        }
+        .block_title {
+            color: #0545f1;
+            font-size: 30px;
+            text-align: center;
+            margin-top: 50px;
+            font-weight: 900;
+        }
+        .second_blocks {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+<!-- Menu -->
+<div class="header">
+    <a href="/main"><img class="logo" th:src="@{/img/logo.jpg}"></a>
+    <a class="btn create_resume" href="/resume">Создать резюме</a>
+    <a class="btn myCabinet" href="/myCabinet">Личный кабинет</a>
+</div>
+
+<div class="main">
+    <h2 class="main_title">Блоки</h2>
+
+    <div class="first_blocks">
+        <!-- First Block-->
+        <a href="/specialists/0/0/40">
+            <div class="block block1">
+                <p class="block_title">Строительство и ремонт</p>
+            </div>
+        </a>
+
+        <!-- Second Block-->
+        <a href="/specialists/34/0/40">
+            <div class="block block2">
+                <p class="block_title">Образование и курсы</p>
+            </div>
+        </a>
+
+        <!-- Third Block-->
+        <a href="/specialists/56/0/40">
+            <div class="block block3">
+                <p class="block_title">Красота и здоровье</p>
+            </div>
+        </a>
+    </div>
+
+    <div class="second_blocks">
+        <!-- Fourth Block-->
+        <a href="/specialists/78/0/40">
+            <div class="block block4">
+                <p class="block_title">Интернет и компьютеры</p>
+            </div>
+        </a>
+
+        <!-- Fives Block-->
+        <a href="/specialists/910/0/40">
+            <div class="block block5">
+                <p class="block_title">Перевозки и автосервис</p>
+            </div>
+        </a>
+
+        <!-- Sixes Block-->
+        <a href="/specialists/1112/0/40">
+            <div class="block block6">
+                <p class="block_title">Уборка и другие</p>
+            </div>
+        </a>
+    </div>
+
+</div>
+</body>
+</html>

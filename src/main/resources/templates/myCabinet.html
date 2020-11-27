@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <title>My Cabinet Page</title>
+
+    <style>
+        /* Menu */
+        .header {
+            width: 100%;
+            height: 70px;
+            position: fixed;
+            background-color: white;
+            top: 0;
+            left: 0;
+            border-bottom: black 2px solid;
+            padding: 10px
+        }
+
+        .logo {
+            float: left;
+            width: 200px;
+            margin-left: -30px;
+        }
+
+        .create_resume {
+            float: right;
+            margin: 0 20px 0 20px;
+            font-size: 20px;
+            padding: 10px;
+            background-color: #28a745;
+            border-radius: 10px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .myCabinet {
+            float: right;
+            color: white;
+            font-size: 20px;
+            text-decoration: none;
+            margin-right: 20px;
+            margin-top: 0;
+            padding: 10px;
+            background-color: red;
+            border-radius: 10px;
+        }
+
+        /* Main Block*/
+        .specialistList {
+            margin: 100px 150px;
+        }
+
+        .block_title {
+            text-align: center;
+            margin-bottom: 50px
+        }
+
+        .card {
+            position: inherit;
+            width: 800px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(0,0,0,.125);
+            border-radius: .25rem;
+        }
+
+        .card-header {
+            border-bottom: 1px solid rgba(0,0,0,.125);
+            padding: 10px;
+        }
+        .card-body {
+            padding: 10px;
+        }
+
+        .card_header_p {
+            display: inline-block;
+        }
+
+        .card_price {
+            float: right;
+            font-weight: 900;
+        }
+
+        .left_side {
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        .card_image {
+            width: 100px;
+            height: 100px;
+            margin-right: 20px
+        }
+
+        .right_side {
+            display: inline-block;
+            width: 600px
+        }
+
+        /* User Block */
+        .user_block {
+            width: 300px;
+            height: 300px;
+            position: fixed;
+            top: 100px;
+            right: 50px;
+            border: black 2px solid;
+            text-align: center;
+        }
+
+        .user_image {
+            width: 150px;
+            height: 150px;
+            margin: 20px 75px;
+            border-radius: 50%;
+            background: #512DA8;
+            font-size: 35px;
+            color: #fff;
+            text-align: center;
+            line-height: 150px;
+        }
+
+        .fade {
+            font-size: 23px;
+        }
+
+        .modal-title {
+            display: inline-block;
+        }
+
+        #test_body {
+            overflow: scroll;
+            height: 500px;
+        }
+
+        .links {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+<!-- Menu -->
+<div class="header">
+    <a href="/main"><img class="logo" th:src="@{/img/logo.jpg}"></a>
+    <a class="btn create_resume" href="/resume">Создать резюме</a>
+    <a class="btn myCabinet" href="/myCabinet">Личный кабинет</a>
+</div>
+
+<!-- Main Block-->
+<div class="specialistList">
+    <h2 class="block_title">Личный кабинет</h2>
+
+    <div class="links">
+        <a href="/myCabinet" class="btn btn-primary">Список моих специалистов</a>
+        <a href="/myResumes" class="btn">Мои резюме</a>
+        <a href="/myClients" class="btn">Мои клиенты</a>
+    </div>
+
+    <div class="card" th:each="specialist : ${specialists}">
+        <input type="hidden" name="hiddenId" th:value="${specialist.getId()}">
+
+        <div class="card-header">
+            <p class="card_header_p" th:text="${specialist.getDate().toString().split(' ')[0]}"></p>
+            <p class="card_header_p" th:text="${'    ' + specialist.getCity().getName()}"></p>
+
+            <div class="card_price" th:if="${specialist.getPrice() == 0}">
+                Договорная цена
+            </div>
+            <div class="card_price" th:if="${specialist.getPrice() != 0}">
+                <p th:text="${specialist.getPrice()}"></p>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="left_side">
+                <div th:if="${specialist.getImage() == null}">
+                    <img class="card_image" th:attr="src=@{${specialist.getImage()}}">
+                </div>
+                <div th:if="${specialist.getImage() != null}">
+                    <div th:if="${specialist.getImage().contains('photos-mt')}">
+                        <img class="card_image" th:attr="src=@{'http://' + ${specialist.getImage()}}">
+                    </div>
+                    <div th:if="${!specialist.getImage().contains('photos-mt')}">
+                        <img class="card_image" th:attr="src=@{'/img/' + ${specialist.getImage()}}">
+                    </div>
+                </div>
+            </div>
+            <div class="right_side">
+                <h5 class="card-title" th:text="${specialist.getTitle()}"></h5>
+                <p class="card-text" th:text="${specialist.getContent()}"></p>
+            </div>
+
+            <a th:href="@{api/deleteSpecialist/(id=${specialist.getId()})}" class="btn btn-danger deleteBtn"
+               style="margin-top: 20px; color: white; width: 49%; display: inline-block">
+                Убрать
+            </a>
+
+            <a th:href="@{api/message/(id=${specialist.getId()})}" class="btn btn-primary messageBtn"
+               style="margin-top: 20px; color: white; width: 49%; display: inline-block">
+                Написать сообщение
+            </a>
+        </div>
+    </div>
+
+    <div class="user_block">
+        <div class="user_image"
+             th:text="${user.getFirstName().toUpperCase().charAt(0)} + ${user.getLastName().toUpperCase().charAt(0)}">
+        </div>
+        <p th:text="${user.getFirstName()} + ' ' + ${user.getLastName()}"></p>
+        <a href="/userPage" style="display: block">Изменить данные</a>
+        <a href="/logout">Выйти</a>
+    </div>
+</div>
+
+<!-- Message Modal -->
+<div class="modal fade" id="messageModal" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLongTitle" style="display: block">Сообщение</h3>
+                <h4 class="modal-title" id="titleName"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="test_body">
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="specialistId">
+                <textarea placeholder="Напишите сообщение" name="newMessage"
+                          id="newMessageId"
+                          style="width: 100%; font-size: 15px"></textarea>
+                <button type="button" class="btn btn-primary addMessageBtn">Отправить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" style="display: block">☹</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Вы точно хотите убрать из списка?
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="deleteFromListId">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-danger deleteFromList">Убрать</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.card .messageBtn').on('click', function (event) {
+            event.preventDefault();
+            var href = $(this).attr('href');
+            getAllMessagesForSpecialist(href, $('#test_body'))
+        });
+
+        $('.card .deleteBtn').on('click', function (event) {
+            event.preventDefault();
+            var href = $(this).attr('href');
+            let id = href.split('/')[2].split("=")[1];
+            $('#deleteModal').modal();
+            $('#deleteFromListId').val(id);
+        });
+
+        $('.modal .deleteFromList').on('click', function (event) {
+            event.preventDefault();
+            let id = $('#deleteFromListId').val();
+            deleteTopic(id);
+            $('#deleteFromListId').val('');
+            setTimeout(function () {
+                $('#test_body').empty();
+                $('#deleteModal').modal('hide');
+                location.replace("http://localhost:5050/myCabinet");
+            }, 1000)
+        });
+
+        $('.modal .addMessageBtn').on('click', function (event) {
+            event.preventDefault();
+            let text = $('#newMessageId').val();
+            let id = $('#specialistId').val();
+            addTopic(text, id, $('#test_body'));
+            //
+            $('#newMessageId').val('');
+            // $('#specialistId').val('');
+        });
+    });
+
+    async function addTopic(text, id, container) {
+        const formData = new FormData();
+        formData.append('content', text);
+        formData.append('specId', id);
+
+        $('#specialistId').val(id);
+
+        return await fetch('/api/addMessage', {
+            method: 'POST',
+            enctype: 'multipart/form-data',
+            body: formData
+        }).then(result => result.json())
+        .then(message => {
+            let card = '<div style="border: gray 2px solid; margin-bottom: 5px; border-radius: 10px">' +
+                '<h5>' + message.date.toString().split("T")[1].split(".")[0] + '</h5>' +
+                '<h4>' + message.content + '</h4>' +
+                '</div>';
+
+            container.append(card);
+        })
+    }
+
+    async function deleteTopic(id) {
+        const formData = new FormData();
+        formData.append('id', id);
+
+        return await fetch('/api/deleteSpecialist', {
+            method: 'POST',
+            enctype: 'multipart/form-data',
+            body: formData
+        })
+    }
+
+    function getSpecialistName(href) {
+        fetch(href, {}).then(result => result.json())
+            .then(specialists => {
+                let res = specialists.title;
+                $('#titleName').empty();
+                $('#titleName').text(res.toUpperCase());
+            })
+    }
+
+    async function getAllMessagesForSpecialist(href, container) {
+        fetch(href, {})
+            .then(result => result.json())
+            .then(arrayMessage => {
+                container.empty();
+
+                if (arrayMessage.length === 0) {
+                    let id = href.split('/')[2].split("=")[1];
+
+                    $('#specialistId').val(id);
+
+                    getSpecialistName('/api/getSpecialist/' + id);
+
+                    container.append('<h4>Пока здесь нет сообщений...</h4>');
+                } else {
+                    let id = href.split('/')[2].split("=")[1];
+
+                    $('#specialistId').val(id);
+
+                    getSpecialistName('/api/getSpecialist/' + id);
+
+                    for (var i = 0; i < arrayMessage.length; i++) {
+                        let card = '<div style="border: gray 2px solid; margin-bottom: 5px; border-radius: 10px">' +
+                            '<h5>' + arrayMessage[i].date.toString().split("T")[1].split(".")[0] + '</h5>' +
+                            '<h4>' + arrayMessage[i].content + '</h4>' +
+                            '</div>';
+                        container.append(card);
+                    }
+                }
+
+                $('#messageModal').modal();
+            })
+    }
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <title>User Page</title>
+
+    <style>
+        /* Menu */
+        .header {
+            width: 100%;
+            height: 70px;
+            position: fixed;
+            background-color: white;
+            top: 0;
+            left: 0;
+            border-bottom: black 2px solid;
+            padding: 10px
+        }
+
+        .logo {
+            float: left;
+            width: 200px;
+            margin-left: -30px;
+        }
+
+        .create_resume {
+            float: right;
+            margin: 0 20px 0 20px;
+            font-size: 20px;
+            padding: 10px;
+            background-color: #28a745;
+            border-radius: 10px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .myCabinet {
+            float: right;
+            color: white;
+            font-size: 20px;
+            text-decoration: none;
+            margin-right: 20px;
+            margin-top: 0;
+            padding: 10px;
+            background-color: red;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+<!-- Menu -->
+<div class="header">
+    <a href="/main"><img class="logo" th:src="@{/img/logo.jpg}"></a>
+    <a class="btn create_resume" href="/resume">Создать резюме</a>
+    <a class="btn myCabinet" href="/myCabinet">Личный кабинет</a>
+</div>
+
+<div class="tab-pane" id="newUser">
+    <form action="/userPage" method="post" id="registration_form"
+          class="form-signin col-md-4 offset-md-4 text-center font-weight-bold"
+          style="margin-top: 100px">
+
+        <h1 style="margin-bottom: 50px">Изменить данные</h1>
+
+        <input type="hidden" name="id" th:value="${user.getId()}">
+
+        <label>Имя</label>
+        <input type="text" id="firstName" name="firstName" class="form-control" th:value="${user.getFirstName()}"
+               required="" autofocus="">
+
+        <label>Фамилия</label>
+        <input type="text" id="lastName" name="lastName" class="form-control" th:value="${user.getLastName()}" required=""
+               autofocus="">
+
+        <label>Возраст</label>
+        <input type="number" id="age" name="age" class="form-control" th:value="${user.getAge()}" required=""
+               autofocus="">
+
+        <label>Логин</label>
+        <input type="text" id="username" name="username" class="form-control" th:value="${user.getUsername()}"
+               required="" autofocus="">
+
+        <label>Пароль</label>
+        <input type="password" id="password" name="password" class="form-control" th:value="${user.getPassword()}"
+               required="">
+
+        <label>Подтвердите пароль</label>
+        <input type="password" id="mPassword" name="mPassword" class="form-control" th:value="${user.getPassword()}"
+               required="">
+
+        <label>Почта</label>
+        <input type="email" id="email" name="email" class="form-control" th:value="${user.getEmail()}"
+               required="">
+
+        <input class="btn mt-2 btn-lg btn-success btn-block" type="submit" value="Сохранить"/>
+    </form>
+</div>
+
+</body>
+</html>

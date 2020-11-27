@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <title>Registration Page</title>
+
+</head>
+<body>
+<div class="tab-pane" id="newUser">
+    <form action="/registration" method="post" id="registration_form"
+          class="form-signin col-md-4 offset-md-4 text-center font-weight-bold"
+            style="margin-top: 100px">
+
+        <h1 style="margin-bottom: 50px">Страница регистрации</h1>
+        <label>Имя</label>
+        <input type="text" id="firstName" name="firstName" class="form-control" placeholder="Имя"
+               required="" autofocus="">
+
+        <label>Фамилия</label>
+        <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Фамилия" required=""
+               autofocus="">
+
+        <label>Возраст</label>
+        <input type="number" id="age" name="age" class="form-control" placeholder="Возраст" required=""
+               autofocus="">
+
+        <label>Логин</label>
+        <input type="text" id="username" name="username" class="form-control" placeholder="Логин"
+               required="" autofocus="">
+
+        <label>Пароль</label>
+        <input type="password" id="password" name="password" class="form-control" placeholder="Пароль"
+               required="">
+
+        <label>Почта</label>
+        <input type="email" id="email" name="email" class="form-control" placeholder="Почта"
+               required="">
+
+        <input class="btn mt-2 btn-lg btn-success btn-block" type="submit" value="Зарегистрироваться"/>
+    </form>
+</div>
+
+</body>
+</html>

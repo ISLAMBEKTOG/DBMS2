@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <title>My Resumes Page</title>
+
+    <style>
+        /* Menu */
+        .header {
+            width: 100%;
+            height: 70px;
+            position: fixed;
+            background-color: white;
+            top: 0;
+            left: 0;
+            border-bottom: black 2px solid;
+            padding: 10px
+        }
+
+        .logo {
+            float: left;
+            width: 200px;
+            margin-left: -30px;
+        }
+
+        .create_resume {
+            float: right;
+            margin: 0 20px 0 20px;
+            font-size: 20px;
+            padding: 10px;
+            background-color: #28a745;
+            border-radius: 10px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .myCabinet {
+            float: right;
+            color: white;
+            font-size: 20px;
+            text-decoration: none;
+            margin-right: 20px;
+            margin-top: 0;
+            padding: 10px;
+            background-color: red;
+            border-radius: 10px;
+        }
+
+        /* Main Block*/
+        .specialistList {
+            margin: 100px 150px;
+        }
+
+        .block_title {
+            text-align: center;
+            margin-bottom: 50px
+        }
+
+        .card {
+            position: inherit;
+            width: 800px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(0,0,0,.125);
+            border-radius: .25rem;
+        }
+
+        .card-header {
+            border-bottom: 1px solid rgba(0,0,0,.125);
+            padding: 10px;
+        }
+        .card-body {
+            padding: 10px;
+        }
+
+        .card_header_p {
+            display: inline-block;
+        }
+
+        .card_price {
+            float: right;
+            font-weight: 900;
+        }
+
+        .left_side {
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        .card_image {
+            width: 100px;
+            height: 100px;
+            margin-right: 20px
+        }
+
+        .right_side {
+            display: inline-block;
+            width: 600px
+        }
+
+        /* User Block */
+        .user_block {
+            width: 300px;
+            height: 300px;
+            position: fixed;
+            top: 100px;
+            right: 50px;
+            border: black 2px solid;
+            text-align: center;
+        }
+
+        .user_image {
+            width: 150px;
+            height: 150px;
+            margin: 20px 75px;
+            border-radius: 50%;
+            background: #512DA8;
+            font-size: 35px;
+            color: #fff;
+            text-align: center;
+            line-height: 150px;
+        }
+
+        .fade {
+            font-size: 23px;
+        }
+
+        .modal-title {
+            display: inline-block;
+        }
+
+        .links {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+<!-- Menu -->
+<div class="header">
+    <a href="/main"><img class="logo" th:src="@{/img/logo.jpg}"></a>
+    <a class="btn create_resume" href="/resume">Создать резюме</a>
+    <a class="btn myCabinet" href="/myCabinet">Личный кабинет</a>
+</div>
+
+<!-- Main Block-->
+<div class="specialistList">
+    <h2 class="block_title">Личный кабинет</h2>
+
+    <div class="links">
+        <a href="/myCabinet" class="btn">Список моих специалистов</a>
+        <a href="/myResumes" class="btn btn-primary">Мои резюме</a>
+        <a href="/myClients" class="btn">Мои клиенты</a>
+    </div>
+
+    <div class="user_block">
+        <div class="user_image"
+             th:text="${user.getFirstName().toUpperCase().charAt(0)} + ${user.getLastName().toUpperCase().charAt(0)}">
+        </div>
+        <p th:text="${user.getFirstName()} + ' ' + ${user.getLastName()}"></p>
+        <a href="/userPage" style="display: block">Изменить данные</a>
+        <a href="/logout">Выйти</a>
+    </div>
+
+    <div class="user_resume">
+        <div class="card " th:each="resume : ${resumes}">
+            <input type="hidden" name="hiddenId" th:value="${resume.getId()}">
+
+            <div class="card-header">
+                <p class="card_header_p" th:text="${resume.getDate().toString().split(' ')[0]}"></p>
+                <p class="card_header_p" th:text="${'    ' + resume.getCity().getName()}"></p>
+
+                <div class="card_price" th:if="${resume.getPrice() == 0}">
+                    Договорная цена
+                </div>
+                <div class="card_price" th:if="${resume.getPrice() != 0}">
+                    <p th:text="${resume.getPrice()}"></p>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="left_side">
+                    <img class="card_image" th:attr="src=@{'/img/' + ${resume.getImage()}}">
+                </div>
+                <div class="right_side">
+                    <h5 class="card-title" th:text="${resume.getTitle()}"></h5>
+                    <p class="card-text" th:text="${resume.getContent()}"></p>
+                </div>
+
+                <a th:href="@{api/deleteResume/(id=${resume.getId()})}" class="btn btn-danger deleteBtn"
+                   style="margin-top: 20px; color: white; width: 100%; display: inline-block">
+                    Удалить
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" style="display: block">☹</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Вы точно хотите удалить?
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="deleteResumeId">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-danger deleteResume">Удалить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $('.card .deleteBtn').on('click', function (event) {
+            event.preventDefault();
+            var href = $(this).attr('href');
+            let id = href.split('/')[2].split("=")[1];
+            console.log(id);
+            $('#deleteModal').modal();
+            $('#deleteResumeId').val(id);
+        });
+
+        $('.modal .deleteResume').on('click', function (event) {
+            event.preventDefault();
+            let id = $('#deleteResumeId').val();
+            console.log(id);
+            deleteTopic(id);
+            $('#deleteResumeId').val('');
+            setTimeout(function () {
+                $('#deleteModal').modal('hide');
+                location.replace("http://localhost:5050/myResumes");
+            }, 1000)
+        });
+    });
+
+    async function deleteTopic(id) {
+        const formData = new FormData();
+        formData.append('specId', id);
+        console.log(id);
+        return await fetch('/api/deleteResume', {
+            method: 'POST',
+            enctype: 'multipart/form-data',
+            body: formData
+        })
+    }
+</script>
+
+</body>
+</html>
